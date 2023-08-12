@@ -41,7 +41,7 @@ app.post('/api/contact', async (req, res) => {
         from: from,
         to: process.env.EMAIL_USERNAME,
         subject: 'New message from contact form',
-        text: message
+        text: `From: ${from} \n Message: ${message}`,
     };
 
     try {
