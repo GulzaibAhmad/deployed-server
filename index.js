@@ -29,6 +29,13 @@ app.post('/api/contact', (req, res) => {
 
     let { from, message } = req.body;
 
+    if (!from || !message) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Both "from" and "message" fields are required.'
+        });
+    }
+
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -46,13 +53,20 @@ app.post('/api/contact', (req, res) => {
         transporter.sendMail(mailOptions, (err, data) => {
             if (err) {
                 console.log('Error occurs', err);
+                return res.status(500).json({
+                    status: 'error',
+                    message: 'Failed to send email.'
+                });
             } else {
                 console.log('Email sent!!!');
             }
         });
 
     } catch (error) {
-        throw error;
+        return res.status(500).json({
+            status: 'error',
+            message: 'An error occurred while sending the email.'
+        });
     }
     res.json({
         status: 'success',
